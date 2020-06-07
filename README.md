@@ -1,5 +1,5 @@
 # tf
-Terraform files for small quick utility deployments.
+Terraform (standalone) files for small quick utility deployments; generally consisting of single VMs with remote access (SSH, RDP) configured.
 
 ### Azure
 #### ubuntu_on_azure.tf
