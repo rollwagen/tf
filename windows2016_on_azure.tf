@@ -14,10 +14,11 @@ variable "adminuser" {
   default	= "rollwagen"
 }
 
-# e.g. define with TF_VAR_password
-variable "password" {
-  type		= string
-  default	= "P@$$w0rd1234!"
+resource "random_password" "password" {
+  length = 16
+  special = true
+  min_upper = 1
+  min_numeric = 1
 }
 
 #
@@ -115,7 +116,7 @@ resource "azurerm_windows_virtual_machine" "example" {
   location            = azurerm_resource_group.rg.location
   size                = "Standard_DS1_v2"
   admin_username      = var.adminuser
-  admin_password      = var.password
+  admin_password      = random_password.password.result
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
@@ -140,6 +141,6 @@ resource "azurerm_windows_virtual_machine" "example" {
 output "public_ip_address" {
   value = azurerm_public_ip.pip.ip_address
 }
-
-
-
+output "password" {
+  value = random_password.password.result
+}
