@@ -37,6 +37,7 @@ variable "resource_group_name" {
 #
 # export TF_VAR_source_address_prefix=`curl 'https://api.ipify.org?format=text'`
 # export TF_VAR_source_address_prefix=`netstat --protocol ip --numeric | grep 22 | grep ESTABLISHED | awk '{print $5}' | awk -F: '{print $1}'`
+# export TF_VAR_source_address_prefix=`echo $SSH_CLIENT | awk '{print $1}'`
 #
 variable "source_address_prefix" {
   type    = string
