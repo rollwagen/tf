@@ -1,8 +1,11 @@
+
+[![GitHub Super-Linter](https://github.com/rollwagen/tf/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 # tf
 Terraform (standalone) files for small quick utility deployments; generally consisting of single VMs with remote access (SSH, RDP) configured.
 
-### Azure
-#### ubuntu_on_azure.tf
+## Azure
+### ubuntu_on_azure.tf
 Deploys a single Ubuntu VM on Azure, with ssh login (port:80, public ip) open.
 To restrict access to just the public IP (host) where you are running terraform from,
 you can set the IP via:
