@@ -1,4 +1,3 @@
-
 [![GitHub Super-Linter](https://github.com/rollwagen/tf/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 # tf
@@ -10,6 +9,5 @@ Deploys a single Ubuntu VM on Azure, with ssh login (port:80, public ip) open.
 To restrict access to just the public IP (host) where you are running terraform from,
 you can set the IP via:
 ```shell
-	export TF_VAR_source_address_prefix=`curl 'https://api.ipify.org?format=text'
+ export TF_VAR_source_address_prefix=`curl 'https://api.ipify.org?format=text'
 ```
-
