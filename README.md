@@ -1,6 +1,6 @@
 # tf
 
-[![GitHub Super-Linter](https://github.com/rollwagen/tf/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![GitHub Super-Linter](https://github.com/rollwagen/tf/workflows/Super-Linter/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 Terraform (standalone) files for small quick utility deployments; generally consisting of single VMs with remote access (SSH, RDP) configured.
 
