@@ -42,13 +42,33 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
 }
 
+
 resource "azurerm_subnet" "subnet" {
   name                = "subnet"
   resource_group_name = azurerm_resource_group.rg.name
   virtual_network_name= azurerm_virtual_network.vnet.name
   address_prefixes      = ["10.0.2.0/24"]
 }
-
+resource "azurerm_network_security_group" "nsg-subnet" { #this should fix accurics.azure.NS.161, but does not
+  name                = "nsg-subnet"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+    security_rule {
+    name                       = "nsr_allow_ssh_inbound"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = var.source_address_prefix
+    destination_address_prefix = "*"
+  }
+}
+resource "azurerm_subnet_network_security_group_association" "nsg-to-subnet" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg-subnet.id
+}
 
 
 resource "azurerm_public_ip" "pip" {
@@ -58,13 +78,13 @@ resource "azurerm_public_ip" "pip" {
   allocation_method   = "Dynamic"
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  name                = "nsg-ubuntuvm"
+resource "azurerm_network_security_group" "nsg-nic" {
+  name                = "nsg-ubuntuvm-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
-resource "azurerm_network_security_rule" "nsr" {
-  name                        = "allow_remote_ssh_inbound"
+resource "azurerm_network_security_rule" "nsr" { 
+  name                        = "nsr_allow_remote_ssh_inbound"
   resource_group_name         = azurerm_resource_group.rg.name
   description                 = "Allow remote protocol SSH (22) inbound."
   priority                    = 100
@@ -75,7 +95,7 @@ resource "azurerm_network_security_rule" "nsr" {
   destination_port_range      = 22
   source_address_prefix       = var.source_address_prefix
   destination_address_prefix  = "*"
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg-nic.name
 }
 
 resource "azurerm_network_interface" "nic" {
@@ -93,7 +113,7 @@ resource "azurerm_network_interface" "nic" {
 
 resource "azurerm_network_interface_security_group_association" "nsg_to_nic" {
   network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_security_group_id = azurerm_network_security_group.nsg-nic.id
 }
 
 resource "azurerm_linux_virtual_machine" "example" {
