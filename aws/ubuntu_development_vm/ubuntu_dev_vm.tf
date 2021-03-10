@@ -51,18 +51,10 @@ resource "aws_route" "my-route" {
 
 resource "aws_security_group_rule" "example" {
   type              = "ingress"
-  cidr_blocks       = ["${var.sg_inbound_ip}"]
+  cidr_blocks       = [var.sg_inbound_ip]
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  security_group_id = aws_vpc.dev-vpc.default_security_group_id
-}
-resource "aws_security_group_rule" "security_rule_http" {
-  type              = "ingress"
-  cidr_blocks       = ["${var.sg_inbound_ip}"]
-  from_port         = 60000
-  to_port           = 61000
-  protocol          = "udp"
   security_group_id = aws_vpc.dev-vpc.default_security_group_id
 }
 
