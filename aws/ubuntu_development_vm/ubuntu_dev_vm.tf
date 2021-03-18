@@ -65,7 +65,10 @@ resource "aws_instance" "my-ec2-instance" {
   instance_type = "t2.micro"
   associate_public_ip_address = "true"
   key_name = "id_rsa.pub"
+  #bridgecrew:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
   subnet_id = aws_subnet.my-subnet.id
+  root_block_device { encrypted = "true" }
+  metadata_options { http_tokens = "required" }
 
   user_data = <<-EOF
     #!/bin/bash
