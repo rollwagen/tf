@@ -31,11 +31,13 @@ variable "source_address_prefix" {
 # Resources
 # 
 resource "azurerm_resource_group" "rg" {
+#ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
   name     = var.resource_group_name
   location = var.location
 }
 
 resource "azurerm_virtual_network" "vnet" {
+#ts:skip=accurics.azure.NS.161 "Ensure subnet has NSG: seems false postitive b/c nsg get configure in tf file."
   name                = "vnet"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
