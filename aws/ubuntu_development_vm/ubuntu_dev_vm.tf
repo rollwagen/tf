@@ -49,12 +49,21 @@ resource "aws_route" "my-route" {
   gateway_id                = aws_internet_gateway.my-internet-gateway.id
 }
 
-resource "aws_security_group_rule" "example" {
+resource "aws_security_group_rule" "sg-rule-ssh-inbound" {
   type              = "ingress"
   cidr_blocks       = [var.sg_inbound_ip]
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
+  security_group_id = aws_vpc.dev-vpc.default_security_group_id
+}
+
+resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
+  type              = "ingress"
+  cidr_blocks       = [var.sg_inbound_ip]
+  from_port         = 60000
+  to_port           = 61000
+  protocol          = "udp"
   security_group_id = aws_vpc.dev-vpc.default_security_group_id
 }
 
@@ -78,11 +87,19 @@ resource "aws_instance" "my-ec2-instance" {
     
     apt update
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
-    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh
+    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh-syntax-highlighting unzip
 
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
     sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
     DEBIAN_FRONTEND=noninteractive apt install -y terraform
+
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+    unzip -d /tmp/ /tmp/awscliv2.zip
+    sudo /tmp/aws/install
+    rm -rf /tmp/aws*
+    echo 'complete -C "/usr/local/bin/aws_completer" aws' >> "/home/ubuntu/.bashrc"
+    [ -d "/home/ubuntu/.aws" ] || mkdir "/home/ubuntu/.aws"
+    echo "[default]\ncli_pager=\noutput=json" > "/home/ubuntu/.aws/config"
 
     EOF
 }
