@@ -68,10 +68,10 @@ resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
 }
 
 resource "aws_instance" "my-ec2-instance" {
-  #ami           = "ami-0b8cd61e48f1cfc2b"
-  #instance_type = "t4g.micro"
-  ami           = "ami-0932440befd74cdba"
-  instance_type = "t2.micro"
+  ami           = "ami-0b8cd61e48f1cfc2b"
+  instance_type = "t4g.micro"
+  #ami           = "ami-0932440befd74cdba"
+  #instance_type = "t2.micro"
   associate_public_ip_address = "true"
   key_name = "id_rsa.pub"
   #bridgecrew:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
@@ -87,14 +87,16 @@ resource "aws_instance" "my-ec2-instance" {
     
     apt update
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
-    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh-syntax-highlighting unzip
+    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh-syntax-highlighting unzip jq docker.io
+
+    sudo usermod -aG docker ubuntu
 
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
     sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
     DEBIAN_FRONTEND=noninteractive apt install -y terraform
 
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-    unzip -d /tmp/ /tmp/awscliv2.zip
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-`uname -m`.zip" -o "/tmp/awscliv2.zip"
+    unzip -q -d /tmp/ /tmp/awscliv2.zip
     sudo /tmp/aws/install
     rm -rf /tmp/aws*
     echo 'complete -C "/usr/local/bin/aws_completer" aws' >> "/home/ubuntu/.bashrc"
