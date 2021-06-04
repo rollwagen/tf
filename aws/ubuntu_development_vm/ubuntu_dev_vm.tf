@@ -20,6 +20,7 @@ variable "sg_inbound_ip" {
 
 
 resource "aws_vpc" "dev-vpc" {
+  #ts:skip=AWS.VPC.Logging.Medium.0470 Just 'play'/short lived VM
   cidr_block = "10.0.0.0/16"
 }
 
@@ -68,6 +69,9 @@ resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
 }
 
 resource "aws_instance" "my-ec2-instance" {
+  #ts:skip=AC_AWS_070 Dev respectively play short lived instance, no detailed logging required
+  #ts:skip=AWS.CloudTrail.Logging.Medium.008 Dev resp. play short lived instance
+  #ts:skip=AC-AW-IS-IN-M-0144 Default VPC is fine for this
   ami           = "ami-0b8cd61e48f1cfc2b"
   instance_type = "t4g.micro"
   #ami           = "ami-0932440befd74cdba"
