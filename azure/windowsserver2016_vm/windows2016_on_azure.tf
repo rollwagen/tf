@@ -49,6 +49,7 @@ variable "source_address_prefix" {
 # Resources
 # 
 resource "azurerm_resource_group" "rg" {
+#ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
   name     = var.resource_group_name
   location = var.location
 }
@@ -61,6 +62,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet" {
+#ts:skip=accurics.azure.NS.161 "Ensure subnet has NSG: seems false postitive b/c nsg get configure in tf file."
   name                = "subnet"
   resource_group_name = azurerm_resource_group.rg.name
   virtual_network_name= azurerm_virtual_network.vnet.name
@@ -140,7 +142,7 @@ resource "azurerm_windows_virtual_machine" "example" {
 
 
 #
-# Output
+# Outputs
 #
 output "public_ip_address" {
   value = azurerm_public_ip.pip.ip_address
