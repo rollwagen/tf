@@ -71,7 +71,7 @@ resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
 resource "aws_instance" "my-ec2-instance" {
   #ts:skip=AWS.CloudTrail.Logging.Medium.008 Dev resp. play short lived instance
   #ts:skip=AC-AW-IS-IN-M-0144 Default VPC is fine for this
-  #ts:skip="AC_AWS_070" No detailed monitoring required
+  #ts:skip=AC_AWS_070 "No detailed monitoring required"
   ami           = "ami-0b8cd61e48f1cfc2b"
   instance_type = "t4g.micro"
   #ami           = "ami-0932440befd74cdba"
