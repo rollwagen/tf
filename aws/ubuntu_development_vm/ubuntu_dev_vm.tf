@@ -20,6 +20,7 @@ variable "sg_inbound_ip" {
 
 
 resource "aws_vpc" "dev-vpc" {
+  #ts:skip=AWS.VPC.Logging.Medium.0470 Just 'play'/short lived VM
   cidr_block = "10.0.0.0/16"
 }
 
@@ -49,7 +50,7 @@ resource "aws_route" "my-route" {
   gateway_id                = aws_internet_gateway.my-internet-gateway.id
 }
 
-resource "aws_security_group_rule" "example" {
+resource "aws_security_group_rule" "sg-rule-ssh-inbound" {
   type              = "ingress"
   cidr_blocks       = [var.sg_inbound_ip]
   from_port         = 22
@@ -58,28 +59,54 @@ resource "aws_security_group_rule" "example" {
   security_group_id = aws_vpc.dev-vpc.default_security_group_id
 }
 
+resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
+  type              = "ingress"
+  cidr_blocks       = [var.sg_inbound_ip]
+  from_port         = 60000
+  to_port           = 61000
+  protocol          = "udp"
+  security_group_id = aws_vpc.dev-vpc.default_security_group_id
+}
+
 resource "aws_instance" "my-ec2-instance" {
-  #ami           = "ami-0b8cd61e48f1cfc2b"
-  #instance_type = "t4g.micro"
-  ami           = "ami-0932440befd74cdba"
-  instance_type = "t2.micro"
+  #ts:skip=AWS.CloudTrail.Logging.Medium.008 Dev resp. play short lived instance
+  #ts:skip=AC-AW-IS-IN-M-0144 Default VPC is fine for this
+  #ts:skip="AC_AWS_070" No detailed monitoring required
+  ami           = "ami-0b8cd61e48f1cfc2b"
+  instance_type = "t4g.micro"
+  #ami           = "ami-0932440befd74cdba"
+  #instance_type = "t2.micro"
   associate_public_ip_address = "true"
   key_name = "id_rsa.pub"
   #bridgecrew:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
   subnet_id = aws_subnet.my-subnet.id
   root_block_device { encrypted = "true" }
-  metadata_options { http_tokens = "required" }
+  monitoring = "true"
+  metadata_options {
+	http_tokens = "required"
+	http_endpoint = "enabled"
+  }
 
   user_data = <<-EOF
     #!/bin/bash
     
     apt update
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
-    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh
+    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh-syntax-highlighting unzip jq docker.io
+
+    sudo usermod -aG docker ubuntu
 
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
     sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
     DEBIAN_FRONTEND=noninteractive apt install -y terraform
+
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-`uname -m`.zip" -o "/tmp/awscliv2.zip"
+    unzip -q -d /tmp/ /tmp/awscliv2.zip
+    sudo /tmp/aws/install
+    rm -rf /tmp/aws*
+    echo 'complete -C "/usr/local/bin/aws_completer" aws' >> "/home/ubuntu/.bashrc"
+    [ -d "/home/ubuntu/.aws" ] || mkdir "/home/ubuntu/.aws"
+    echo "[default]\ncli_pager=\noutput=json" > "/home/ubuntu/.aws/config"
 
     EOF
 }
