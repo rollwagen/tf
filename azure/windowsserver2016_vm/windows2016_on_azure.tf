@@ -142,7 +142,7 @@ resource "azurerm_windows_virtual_machine" "example" {
 
 
 #
-# Output
+# Outputs
 #
 output "public_ip_address" {
   value = azurerm_public_ip.pip.ip_address
