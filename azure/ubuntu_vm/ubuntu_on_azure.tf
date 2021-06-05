@@ -6,7 +6,6 @@ provider "azurerm" {
   features {}
 }
 
-
 #
 # Variables
 #
