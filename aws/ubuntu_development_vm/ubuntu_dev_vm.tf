@@ -21,6 +21,7 @@ variable "sg_inbound_ip" {
 
 resource "aws_vpc" "dev-vpc" {
   #ts:skip=AWS.VPC.Logging.Medium.0470 Just 'play'/short lived VM
+  #checkov:skip=BC_AWS_LOGGING_9:Just 'play'/short lived VM
   cidr_block = "10.0.0.0/16"
 }
 
@@ -78,7 +79,7 @@ resource "aws_instance" "my-ec2-instance" {
   #instance_type = "t2.micro"
   associate_public_ip_address = "true"
   key_name = "id_rsa.pub"
-  #bridgecrew:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
+  #checkov:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
   subnet_id = aws_subnet.my-subnet.id
   root_block_device { encrypted = "true" }
   monitoring = "true"
