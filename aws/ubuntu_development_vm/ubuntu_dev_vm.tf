@@ -93,13 +93,19 @@ resource "aws_instance" "my-ec2-instance" {
     
     apt update
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
+    DEBIAN_FRONTEND=noninteractive apt install -y gnupg software-properties-common curl locales
+    DEBIAN_FRONTEND=noninteractive apt install -y neovim netcat shellcheck fd-find
     DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh-syntax-highlighting unzip jq docker.io
 
     sudo usermod -aG docker ubuntu
 
-    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-    sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-    DEBIAN_FRONTEND=noninteractive apt install -y terraform
+    if [[ $(dpkg --print-architecture) != "arm64" ]]
+    then
+      curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+      sudo apt update
+      DEBIAN_FRONTEND=noninteractive apt install -y terraform
+    fi
 
     curl "https://awscli.amazonaws.com/awscli-exe-linux-`uname -m`.zip" -o "/tmp/awscliv2.zip"
     unzip -q -d /tmp/ /tmp/awscliv2.zip
@@ -107,7 +113,11 @@ resource "aws_instance" "my-ec2-instance" {
     rm -rf /tmp/aws*
     echo 'complete -C "/usr/local/bin/aws_completer" aws' >> "/home/ubuntu/.bashrc"
     [ -d "/home/ubuntu/.aws" ] || mkdir "/home/ubuntu/.aws"
-    echo "[default]\ncli_pager=\noutput=json" > "/home/ubuntu/.aws/config"
+    echo -e "[default]\ncli_pager=jq\noutput=json\nregion=eu-central-1" > "/home/ubuntu/.aws/config"
+
+    # for mosh to work properly
+    sudo locale-gen "en_US.UTF-8"
+    sudo update-locale LC_ALL="en_US.UTF-8"
 
     EOF
 }
