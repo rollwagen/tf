@@ -15,7 +15,7 @@ provider "aws" {
 # export TF_VAR_sg_inbound_ip=`curl 'https://api.ipify.org?format=text'`/32
 variable "sg_inbound_ip" {
   type    = string
-  default = "0.0.0.0/0" 
+  default = "0.0.0.0/0"
 }
 
 
@@ -74,7 +74,8 @@ resource "aws_instance" "my-ec2-instance" {
   #ts:skip=AC-AW-IS-IN-M-0144 Default VPC is fine for this
   #ts:skip=AC_AWS_070 "No detailed monitoring required"
   ami           = "ami-0b8cd61e48f1cfc2b"
-  instance_type = "t4g.micro"
+  instance_type = "t4g.medium"
+  #instance_type = "t4g.micro"
   #ami           = "ami-0932440befd74cdba"
   #instance_type = "t2.micro"
   associate_public_ip_address = "true"
@@ -84,18 +85,18 @@ resource "aws_instance" "my-ec2-instance" {
   root_block_device { encrypted = "true" }
   monitoring = "true"
   metadata_options {
-	http_tokens = "required"
-	http_endpoint = "enabled"
+    http_tokens = "required"
+    http_endpoint = "enabled"
   }
 
   user_data = <<-EOF
     #!/bin/bash
-    
+
     apt update
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
-    DEBIAN_FRONTEND=noninteractive apt install -y gnupg software-properties-common curl locales
+    DEBIAN_FRONTEND=noninteractive apt install -y gnupg software-properties-common curl locales gcc
     DEBIAN_FRONTEND=noninteractive apt install -y neovim netcat shellcheck fd-find
-    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh-syntax-highlighting unzip jq docker.io
+    DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh zsh-syntax-highlighting unzip jq docker.io
 
     sudo usermod -aG docker ubuntu
 
@@ -118,6 +119,14 @@ resource "aws_instance" "my-ec2-instance" {
     # for mosh to work properly
     sudo locale-gen "en_US.UTF-8"
     sudo update-locale LC_ALL="en_US.UTF-8"
+
+    # lsd and bat
+    curl -OL https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_$(dpkg --print-architecture).deb
+    sudo dpkg -i lsd_*.deb
+    curl -OL https://github.com/sharkdp/bat/releases/download/v0.18.3/bat_0.18.3_$(dpkg --print-architecture).deb
+    sudo dpkg -i bat_*.deb
+    rm ./*.deb
+
 
     EOF
 }
