@@ -60,6 +60,19 @@ resource "aws_security_group_rule" "sg-rule-ssh-inbound" {
   security_group_id = aws_vpc.dev-vpc.default_security_group_id
 }
 
+/*
+resource "aws_security_group_rule" "sg-rule-elasticsearch-inbound" {
+  type              = "ingress"
+  cidr_blocks       = [var.sg_inbound_ip]
+  from_port         = 9200
+  to_port           = 9200 
+  protocol          = "tcp"
+  security_group_id = aws_vpc.dev-vpc.default_security_group_id
+}
+*/
+
+
+
 resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
   type              = "ingress"
   cidr_blocks       = [var.sg_inbound_ip]
@@ -95,7 +108,7 @@ resource "aws_instance" "my-ec2-instance" {
     apt update
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
     DEBIAN_FRONTEND=noninteractive apt install -y gnupg software-properties-common curl locales gcc
-    DEBIAN_FRONTEND=noninteractive apt install -y neovim netcat shellcheck fd-find
+    DEBIAN_FRONTEND=noninteractive apt install -y neovim netcat shellcheck fd-find net-tools
     DEBIAN_FRONTEND=noninteractive apt install -y nmap mosh rsync fzf zsh zsh-syntax-highlighting unzip jq docker.io
 
     sudo usermod -aG docker ubuntu
