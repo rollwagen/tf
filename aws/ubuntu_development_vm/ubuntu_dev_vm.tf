@@ -14,8 +14,9 @@ provider "aws" {
 
 # export TF_VAR_sg_inbound_ip=`curl 'https://api.ipify.org?format=text'`/32
 variable "sg_inbound_ip" {
-  type    = string
-  default = "0.0.0.0/0"
+  type        = string
+  default     = "0.0.0.0/0"
+  description = "IP address (CIDR) to restrict ssh and mosh inbound traffic to."
 }
 
 
@@ -65,7 +66,7 @@ resource "aws_security_group_rule" "sg-rule-elasticsearch-inbound" {
   type              = "ingress"
   cidr_blocks       = [var.sg_inbound_ip]
   from_port         = 9200
-  to_port           = 9200 
+  to_port           = 9200
   protocol          = "tcp"
   security_group_id = aws_vpc.dev-vpc.default_security_group_id
 }
@@ -145,6 +146,6 @@ resource "aws_instance" "my-ec2-instance" {
 }
 
 output "public_ip" {
-  value = aws_instance.my-ec2-instance.public_ip
+  value       = aws_instance.my-ec2-instance.public_ip
+  description = "Public IP of the created instance."
 }
-
