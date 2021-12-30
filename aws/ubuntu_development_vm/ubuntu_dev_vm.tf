@@ -19,7 +19,6 @@ variable "sg_inbound_ip" {
   description = "IP address (CIDR) to restrict ssh and mosh inbound traffic to."
 }
 
-
 resource "aws_vpc" "dev-vpc" {
   #ts:skip=AWS.VPC.Logging.Medium.0470 Just 'play'/short lived VM
   #checkov:skip=BC_AWS_LOGGING_9:Just 'play'/short lived VM
@@ -71,8 +70,6 @@ resource "aws_security_group_rule" "sg-rule-elasticsearch-inbound" {
   security_group_id = aws_vpc.dev-vpc.default_security_group_id
 }
 */
-
-
 
 resource "aws_security_group_rule" "sg-rule-mosh-inbound" {
   type              = "ingress"
