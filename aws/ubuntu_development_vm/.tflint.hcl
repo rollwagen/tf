@@ -40,3 +40,18 @@ rule "terraform_typed_variables" {
   enabled = true
 }
 
+# Disallow variables, data sources,
+# and locals that are declared but never used	
+# default: disabled
+rule "terraform_unused_declarations" {
+   enabled = true
+}
+
+# Check that all required_providers
+# are used in the module
+rule "terraform_unused_required_providers" {
+   enabled = true  
+}
+
+
+
