@@ -12,6 +12,8 @@ jobs:
   tflint:
     name: tflint
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./aws/ubuntu_development_vm
 
     steps:
     - uses: actions/checkout@v2
@@ -19,21 +21,20 @@ jobs:
 
     - uses: terraform-linters/setup-tflint@v1
       name: Setup TFLint
-      working-directory: ./aws/ubuntu_development_vm
       with:
         tflint_version: latest
 
     - name: Show tflint version
-      working-directory: ./aws/ubuntu_development_vm
       run: tflint --version
+      working-directory: ${{env.working-directory}}
 
     - name: Initialize TFLint
-      working-directory: ./aws/ubuntu_development_vm
       run: tflint --init
+      working-directory: ${{env.working-directory}}
 
     - name: Run TFLint
-      working-directory: ./aws/ubuntu_development_vm
       run: tflint --log-level=info -f compact
+      working-directory: ${{env.working-directory}}
 
   tfsec:
     name: tfsec (with sarif report)
