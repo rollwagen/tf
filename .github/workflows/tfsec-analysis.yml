@@ -4,22 +4,18 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master] 
+    branches: [master]
   schedule:
     - cron: '45 17 * * 1'
 
 jobs:
   tflint:
+    name: tflint
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
       name: Checkout source code
-
-    - uses: actions/cache@v2
-      name: Cache plugin dir
-      with:
-        path: ~/.tflint.d/plugins
 
     - uses: terraform-linters/setup-tflint@v1
       name: Setup TFLint
@@ -36,7 +32,7 @@ jobs:
       run: tflint -f compact
 
   tfsec:
-    name: Run tfsec sarif report
+    name: tfsec (with sarif report)
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -52,8 +48,8 @@ jobs:
         with:
           sarif_file: tfsec.sarif
 
-      - name: Upload SARIF file
+      - name: Upload tfsec SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: tfsec.sarif  
+          sarif_file: tfsec.sarif
