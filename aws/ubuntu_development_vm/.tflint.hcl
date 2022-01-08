@@ -8,7 +8,7 @@
 #
 plugin "aws" {
     enabled = true
-    deep_check = true
+    deep_check = false
 }
 
 #
@@ -41,7 +41,7 @@ rule "terraform_typed_variables" {
 }
 
 # Disallow variables, data sources,
-# and locals that are declared but never used	
+# and locals that are declared but never used
 # default: disabled
 rule "terraform_unused_declarations" {
    enabled = true
@@ -50,8 +50,5 @@ rule "terraform_unused_declarations" {
 # Check that all required_providers
 # are used in the module
 rule "terraform_unused_required_providers" {
-   enabled = true  
+   enabled = true
 }
-
-
-
