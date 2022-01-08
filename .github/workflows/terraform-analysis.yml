@@ -19,17 +19,21 @@ jobs:
 
     - uses: terraform-linters/setup-tflint@v1
       name: Setup TFLint
+      working-directory: ./aws/ubuntu_development_vm
       with:
         tflint_version: latest
 
     - name: Show tflint version
+      working-directory: ./aws/ubuntu_development_vm
       run: tflint --version
 
     - name: Initialize TFLint
+      working-directory: ./aws/ubuntu_development_vm
       run: tflint --init
 
     - name: Run TFLint
-      run: tflint -f compact
+      working-directory: ./aws/ubuntu_development_vm
+      run: tflint --log-level=info -f compact
 
   tfsec:
     name: tfsec (with sarif report)
