@@ -1,9 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: tfsec
+name: tflint_and_tfsec
 
 on:
   push:
@@ -12,6 +7,34 @@ on:
     branches: [ master ]  
   schedule:
     - cron: '45 17 * * 1'
+
+jobs:
+  tflint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout source code
+
+    - uses: actions/cache@v2
+      name: Cache plugin dir
+      with:
+        path: ~/.tflint.d/plugins
+
+    - uses: terraform-linters/setup-tflint@v1
+      name: Setup TFLint
+      with:
+        tflint_version: latest
+
+    - name: Show tflint version
+      run: tflint --version
+
+    - name: Initialize TFLint
+      run: tflint --init
+
+    - name: Run TFLint
+      run: tflint -f compact
+
 
 jobs:
   tfsec:
