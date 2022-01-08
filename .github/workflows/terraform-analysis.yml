@@ -33,7 +33,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Run TFLint
-      run: tflint --log-level=info -f compact
+      run: tflint --loglevel=info -f compact
       working-directory: ${{env.working-directory}}
 
   tfsec:
