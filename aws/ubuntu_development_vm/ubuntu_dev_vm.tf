@@ -90,7 +90,7 @@ resource "aws_instance" "my-ec2-instance" {
   #ami           = "ami-0932440befd74cdba"
   #instance_type = "t2.micro"
   associate_public_ip_address = "true"
-  key_name                    = "id_rsa.pub"
+  key_name                    = "ssh-ed25519.pub"
   #checkov:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
   subnet_id = aws_subnet.my-subnet.id
   root_block_device { encrypted = "true" }
