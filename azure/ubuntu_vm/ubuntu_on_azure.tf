@@ -10,33 +10,36 @@ provider "azurerm" {
 # Variables
 #
 variable "location" {
-  type    = string
-  default = "West Europe"
+  type        = string
+  default     = "West Europe"
+  description = "Location e.g. 'West Europe'"
 }
 
 variable "resource_group_name" {
-  type    = string
-  default = "rg-ubuntuvm"
+  type        = string
+  default     = "rg-ubuntuvm"
+  description = "Resource group name"
 }
 
 # export TF_VAR_source_address_prefix=`curl 'https://api.ipify.org?format=text'`
 variable "source_address_prefix" {
-  type    = string
-  default = "*" 
+  type        = string
+  default     = "*"
+  description = "CIDR/IP address to restrict access from"
 }
 
 
 #
 # Resources
-# 
+#
 resource "azurerm_resource_group" "rg" {
-#ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
+  #ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
   name     = var.resource_group_name
   location = var.location
 }
 
 resource "azurerm_virtual_network" "vnet" {
-#ts:skip=accurics.azure.NS.161 "Ensure subnet has NSG: seems false postitive b/c nsg get configure in tf file."
+  #ts:skip=accurics.azure.NS.161 "Ensure subnet has NSG: seems false postitive b/c nsg get configure in tf file."
   name                = "vnet"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -45,16 +48,16 @@ resource "azurerm_virtual_network" "vnet" {
 
 
 resource "azurerm_subnet" "subnet" {
-  name                = "subnet"
-  resource_group_name = azurerm_resource_group.rg.name
-  virtual_network_name= azurerm_virtual_network.vnet.name
-  address_prefixes      = ["10.0.2.0/24"]
+  name                 = "subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
 resource "azurerm_network_security_group" "nsg-subnet" { #this should fix accurics.azure.NS.161, but does not
   name                = "nsg-subnet"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-    security_rule {
+  security_rule {
     name                       = "nsr_allow_ssh_inbound"
     priority                   = 100
     direction                  = "Inbound"
@@ -84,7 +87,7 @@ resource "azurerm_network_security_group" "nsg-nic" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
-resource "azurerm_network_security_rule" "nsr" { 
+resource "azurerm_network_security_rule" "nsr" {
   name                        = "nsr_allow_remote_ssh_inbound"
   resource_group_name         = azurerm_resource_group.rg.name
   description                 = "Allow remote protocol SSH (22) inbound."
@@ -150,8 +153,6 @@ resource "azurerm_linux_virtual_machine" "example" {
 # Output
 #
 output "public_ip_address" {
-  value = azurerm_public_ip.pip.ip_address
+  value       = azurerm_public_ip.pip.ip_address
+  description = "Public IP address of the provisioned VM"
 }
-
-
-
