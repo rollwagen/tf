@@ -1,9 +1,11 @@
 # tf
 
+## Description
+
 Terraform (standalone) files for small quick utility deployments;
 generally consisting of single VMs with remote access (SSH, RDP) configured.
 
-## Example: Azure - ubuntu_on_azure.tf
+## Example: Azure - ubuntu\_on\_azure.tf
 
 Deploys a single Ubuntu VM on Azure, with ssh login (port:80, public ip) open.
 To restrict access to just the public IP (host) where you are running terraform from,
