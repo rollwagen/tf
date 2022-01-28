@@ -28,7 +28,6 @@ variable "source_address_prefix" {
   description = "CIDR/IP address to restrict access from"
 }
 
-
 #
 # Resources
 #
