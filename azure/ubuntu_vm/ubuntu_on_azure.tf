@@ -35,6 +35,9 @@ resource "azurerm_resource_group" "rg" {
   #ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
   name     = var.resource_group_name
   location = var.location
+  tags = {
+    yor_trace = "d0b8cf34-705f-48bd-a68e-b230fe8c4beb"
+  }
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -43,6 +46,9 @@ resource "azurerm_virtual_network" "vnet" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.0.0.0/16"]
+  tags = {
+    yor_trace = "e2425077-32e7-43a7-9b2c-f917da3cff1e"
+  }
 }
 
 
@@ -67,6 +73,9 @@ resource "azurerm_network_security_group" "nsg-subnet" { #this should fix accuri
     source_address_prefix      = var.source_address_prefix
     destination_address_prefix = "*"
   }
+  tags = {
+    yor_trace = "baf647d8-ed5d-406e-a27d-4cbe7f9443f8"
+  }
 }
 resource "azurerm_subnet_network_security_group_association" "nsg-to-subnet" {
   subnet_id                 = azurerm_subnet.subnet.id
@@ -79,12 +88,18 @@ resource "azurerm_public_ip" "pip" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
+  tags = {
+    yor_trace = "82cf43e2-3947-489a-a204-5505b30a49bb"
+  }
 }
 
 resource "azurerm_network_security_group" "nsg-nic" {
   name                = "nsg-ubuntuvm-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  tags = {
+    yor_trace = "fc6071fc-1d9e-431a-918d-50bb8c554a8e"
+  }
 }
 resource "azurerm_network_security_rule" "nsr" {
   name                        = "nsr_allow_remote_ssh_inbound"
@@ -111,6 +126,9 @@ resource "azurerm_network_interface" "nic" {
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip.id
+  }
+  tags = {
+    yor_trace = "14f1a4b7-eeb4-460a-8e90-79867ae4ce86"
   }
 }
 
@@ -144,6 +162,9 @@ resource "azurerm_linux_virtual_machine" "example" {
     offer     = "UbuntuServer"
     sku       = "18.04-LTS"
     version   = "latest"
+  }
+  tags = {
+    yor_trace = "a9246e20-b74e-47ba-8c24-ca7c9ebc68e1"
   }
 }
 

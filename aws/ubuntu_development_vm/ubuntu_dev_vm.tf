@@ -23,26 +23,41 @@ resource "aws_vpc" "dev-vpc" {
   #ts:skip=AWS.VPC.Logging.Medium.0470 Just 'play'/short lived VM
   #checkov:skip=BC_AWS_LOGGING_9:Just 'play'/short lived VM
   cidr_block = "10.0.0.0/16"
+  tags = {
+    yor_trace = "be8201a6-a5e0-4761-afa3-2fb958a630a7"
+  }
 }
 
 resource "aws_subnet" "my-subnet" {
   vpc_id            = aws_vpc.dev-vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "eu-central-1a"
+  tags = {
+    yor_trace = "0068a3ee-503a-4ac9-9666-c451f949d9f4"
+  }
 }
 resource "aws_subnet" "my-subnet-b" {
   vpc_id            = aws_vpc.dev-vpc.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "eu-central-1b"
+  tags = {
+    yor_trace = "7394fed0-63fc-4862-acf8-32a4f4557fc6"
+  }
 }
 resource "aws_subnet" "my-subnet-c" {
   vpc_id            = aws_vpc.dev-vpc.id
   cidr_block        = "10.0.3.0/24"
   availability_zone = "eu-central-1c"
+  tags = {
+    yor_trace = "662f07f4-1550-485f-bc96-5aa623a6251c"
+  }
 }
 
 resource "aws_internet_gateway" "my-internet-gateway" {
   vpc_id = aws_vpc.dev-vpc.id
+  tags = {
+    yor_trace = "6c3b0d9a-10b4-4a24-a6cc-35572136a2f9"
+  }
 }
 
 resource "aws_route" "my-route" {
@@ -140,6 +155,9 @@ resource "aws_instance" "my-ec2-instance" {
 
 
     EOF
+  tags = {
+    yor_trace = "9cd1436e-a9fe-477b-bfba-0a1b2e95db4b"
+  }
 }
 
 output "public_ip" {

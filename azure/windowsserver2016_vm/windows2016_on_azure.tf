@@ -10,14 +10,14 @@ provider "azurerm" {
 # Variables username and login
 #
 variable "adminuser" {
-  type		= string
-  default	= "rollwagen"
+  type    = string
+  default = "rollwagen"
 }
 
 resource "random_password" "password" {
-  length = 16
-  special = true
-  min_upper = 1
+  length      = 16
+  special     = true
+  min_upper   = 1
   min_numeric = 1
 }
 
@@ -41,7 +41,7 @@ variable "resource_group_name" {
 #
 variable "source_address_prefix" {
   type    = string
-  default = "*" 
+  default = "*"
 }
 
 
@@ -49,9 +49,12 @@ variable "source_address_prefix" {
 # Resources
 # 
 resource "azurerm_resource_group" "rg" {
-#ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
+  #ts:skip=accurics.azure.NS.272 "Temporary/ad-hoc playground VM, no resource lock needed."
   name     = var.resource_group_name
   location = var.location
+  tags = {
+    yor_trace = "fb4f8edb-ea19-49e7-b90a-47ee73504f9f"
+  }
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -59,14 +62,17 @@ resource "azurerm_virtual_network" "vnet" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.0.0.0/16"]
+  tags = {
+    yor_trace = "73ef2c0b-79f3-4ba9-a92f-292f0640573f"
+  }
 }
 
 resource "azurerm_subnet" "subnet" {
-#ts:skip=accurics.azure.NS.161 "Ensure subnet has NSG: seems false postitive b/c nsg get configure in tf file."
-  name                = "subnet"
-  resource_group_name = azurerm_resource_group.rg.name
-  virtual_network_name= azurerm_virtual_network.vnet.name
-  address_prefixes      = ["10.0.2.0/24"]
+  #ts:skip=accurics.azure.NS.161 "Ensure subnet has NSG: seems false postitive b/c nsg get configure in tf file."
+  name                 = "subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
 
@@ -76,12 +82,18 @@ resource "azurerm_public_ip" "pip" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
+  tags = {
+    yor_trace = "fcf9b69c-3be3-4e8c-bf7b-c202479f642f"
+  }
 }
 
 resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-windows2016vm"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  tags = {
+    yor_trace = "a835c51e-48e3-4160-9db9-4aded1ba2433"
+  }
 }
 resource "azurerm_network_security_rule" "nsr" {
   name                        = "allow_remote_rdp_inbound"
@@ -108,6 +120,9 @@ resource "azurerm_network_interface" "nic" {
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip.id
+  }
+  tags = {
+    yor_trace = "de87273d-04d2-41d2-80b5-65bebfce7330"
   }
 }
 
@@ -137,6 +152,9 @@ resource "azurerm_windows_virtual_machine" "example" {
     offer     = "WindowsServer"
     sku       = "2016-Datacenter"
     version   = "latest"
+  }
+  tags = {
+    yor_trace = "c8677a92-fa14-43d9-9f8d-3c836d9aeca5"
   }
 }
 
