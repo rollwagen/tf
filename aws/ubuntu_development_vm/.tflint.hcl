@@ -7,6 +7,8 @@
 #  exist, terraform apply will fail, which can't be found by general validation.
 #
 plugin "aws" {
+    source  = "github.com/terraform-linters/tflint-ruleset-aws"
+    version = "0.12.0"
     enabled = true
     deep_check = false
 }
