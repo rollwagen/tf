@@ -144,13 +144,11 @@ resource "aws_instance" "my-ec2-instance" {
     curl -OL https://github.com/sharkdp/bat/releases/download/v0.18.3/bat_0.18.3_$(dpkg --print-architecture).deb
     sudo dpkg -i bat_*.deb
     rm ./*.deb
-
-
     EOF
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  # prevent_destroy = true
+  # }
 }
 
 output "public_ip" {
