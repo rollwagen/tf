@@ -20,6 +20,12 @@ variable "sg_inbound_ip" {
   description = "IP address (CIDR) to restrict ssh and mosh inbound traffic to."
 }
 
+variable "ec2_key_pair" {
+  type        = string
+  default     = "id_ed25519.pub" # id_ed25519_ipad.pub
+  description = "The EC2 key pair to use; must exist already in AWS EC2"
+}
+
 resource "aws_vpc" "dev-vpc" {
   #ts:skip=AWS.VPC.Logging.Medium.0470 Just 'play'/short lived VM
   #checkov:skip=BC_AWS_LOGGING_9:Just 'play'/short lived VM
@@ -91,7 +97,7 @@ resource "aws_instance" "my-ec2-instance" {
   #ami           = "ami-0932440befd74cdba"
   #instance_type = "t2.micro"
   associate_public_ip_address = "true"
-  key_name                    = "ssh-ed25519.pub"
+  key_name                    = var.ec2_key_pair
   #checkov:skip=CKV_AWS_88:This instance requires a public IP (direct SSH access)
   subnet_id = aws_subnet.my-subnet.id
   root_block_device { encrypted = "true" }
@@ -141,6 +147,10 @@ resource "aws_instance" "my-ec2-instance" {
 
 
     EOF
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 output "public_ip" {
