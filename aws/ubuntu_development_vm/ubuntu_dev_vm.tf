@@ -22,7 +22,7 @@ variable "sg_inbound_ip" {
 
 variable "ec2_key_pair" {
   type        = string
-  default     = "id_ed25519.pub" # id_ed25519_ipad.pub
+  default     = "ssh-ed25519.pub" # id_ed25519_ipad.pub
   description = "The EC2 key pair to use; must exist already in AWS EC2"
 }
 
