@@ -8,7 +8,7 @@
 #
 plugin "aws" {
     source  = "github.com/terraform-linters/tflint-ruleset-aws"
-    version = "0.12.0"
+    version = "0.13.2"
     enabled = true
     deep_check = false
 }
