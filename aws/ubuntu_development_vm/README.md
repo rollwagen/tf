@@ -3,13 +3,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.0 |
+| terraform | >= 1.0 |
+| aws | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.45.0 |
+| aws | 3.45.0 |
 
 ## Modules
 
@@ -33,11 +34,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_sg_inbound_ip"></a> [sg\_inbound\_ip](#input\_sg\_inbound\_ip) | IP address (CIDR) to restrict ssh and mosh inbound traffic to. | `string` | `"0.0.0.0/0"` | no |
+| ec2\_key\_pair | The EC2 key pair to use; must exist already in AWS EC2 | `string` | `"ssh-ed25519.pub"` | no |
+| sg\_inbound\_ip | IP address (CIDR) to restrict ssh and mosh inbound traffic to. | `string` | `"0.0.0.0/0"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | Public IP of the created instance. |
+| public\_ip | Public IP of the created instance. |
 <!-- END_TF_DOCS -->
